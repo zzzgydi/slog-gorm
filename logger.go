@@ -63,6 +63,7 @@ type logger struct {
 	sloggerHandler            slog.Handler
 	ignoreTrace               bool
 	ignoreRecordNotFoundError bool
+	parameterizedQueries      bool
 	traceAll                  bool
 	slowThreshold             time.Duration
 	logLevel                  map[LogType]slog.Level
@@ -190,6 +191,14 @@ func (l logger) Trace(ctx context.Context, begin time.Time, fc func() (sql strin
 
 		l.logAttrs(ctx, l.logLevel[DefaultLogType], fmt.Sprintf("SQL query executed [%s]", elapsed), attributes...)
 	}
+}
+
+// ParamsFilter filter params
+func (l logger) ParamsFilter(ctx context.Context, sql string, params ...interface{}) (string, []interface{}) {
+	if l.parameterizedQueries {
+		return sql, nil
+	}
+	return sql, params
 }
 
 func (l logger) appendContextAttributes(ctx context.Context, args []any) []any {

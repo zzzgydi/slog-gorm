@@ -73,6 +73,13 @@ func WithIgnoreTrace() Option {
 	}
 }
 
+// WithParameterizedQueries
+func WithParameterizedQueries(parameterizedQueries bool) Option {
+	return func(l *logger) {
+		l.parameterizedQueries = parameterizedQueries
+	}
+}
+
 // WithContextValue adds a context value to the log
 func WithContextValue(slogAttrName, contextKey string) Option {
 	return func(l *logger) {
